@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SRE Playground</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; padding-top: 50px; }
+        button { margin: 10px; padding: 15px 30px; font-size: 16px; }
+        #response { margin-top: 30px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>🚀 Welcome to Your SRE Playground</h1>
+    <p>Trigger endpoints and simulate incidents</p>
+
+    <button onclick="callAPI('/order')">📦 Place Order</button>
+    <button onclick="callAPI('/status')">🔄 Check Status</button>
+
+    <div id="response"></div>
+
+    <script>
+        async function callAPI(endpoint) {
+            const res = await fetch(endpoint);
+            const text = await res.text();
+            document.getElementById('response').innerText =
+                `${endpoint}: ${res.status} – ${text}`;
+        }
+    </script>
+</body>
+</html>
