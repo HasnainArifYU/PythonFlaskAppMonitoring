@@ -1,22 +1,40 @@
-version: "3.9"
+version: "3.9"  # Compose file format version
 
 services:
+
+  # Your Python Flask app service
   app:
-    build: .
+    build: .  # Build this container from Dockerfile in current directory
     ports:
-      - "5000:5000"
-    restart: always
-
-  prometheus:
-    image: prom/prometheus
+      - "5000:5000"  # Map host:container port for app access
+    restart: always  # Auto-restart if container crashes
     volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
-    ports:
-      - "9091:9090"
+      - ./templates:/app/templates  # Make sure your HTML is accessible in Flask
 
+  # Prometheus service
+  prometheus:
+    image: prom/prometheus  # Use official Prometheus image
+    ports:
+      - "9090:9090"  # Expose Prometheus web UI on localhost:9090
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml  # Prom config mount
+
+  # Grafana for dashboards
   grafana:
     image: grafana/grafana
     ports:
-      - "3000:3000"
+      - "3000:3000"  # Grafana UI on localhost:3000
     environment:
-      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin  # Default login: admin/admin
+    volumes:
+      - grafana-storage:/var/lib/grafana  # Persist dashboards & config
+
+  # node_exporter for system-level metrics
+  node_exporter:
+    image: prom/node-exporter
+    ports:
+      - "9100:9100"  # Expose raw system metrics
+
+volumes:
+  grafana-storage:  # Named volume for Grafana data persistence
+
